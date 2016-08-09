@@ -10,7 +10,7 @@ const envs = envstrict([
   required: false,
   default: 'development',
   filter: (val) => val.toUpperCase(),
-  definitionKey: 'environment'
+  rename: 'environment'
 },
 {
   key: 'PORT',

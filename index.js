@@ -7,64 +7,73 @@ const base = {
   required: false,
   val: null,
   default: null,
-  filter: null,
+  transformer: null,
   delim: null,
-  destinationKey: null,
-  mutateKey: false
+  rename: null,
+  mutate: false
 };
 
-const defaults = {
+const settings = {
   wildcard: null
 };
 
-const filterErrors = (out) => out.val === null && out.required === true;
-const wildcardFind = (str, key) => key.indexOf(str) !== -1;
+// filter fn for finding missing required values.
+const errors = (out) => out.val === null && out.required === true;
 
-const applyDefaults = (out) => {
+// delimit seperated value lists to arrays
+const delims = function (out) {
+  if (out.val !== null && out.delim !== null) out.val = out.val.split(out.delim);
+  return out;
+};
+
+// apply defaults to the val
+const defaults = function (out) {
   if (out.val === null && out.default !== null) out.val = out.default;
   return out;
 };
 
-const applyDelims = (out) => {
-  if (out.delim !== null) out.val = out.val.split(out.delim);
+// apply transformers on the value, important to always have
+// happen after you apply defaults/delims
+const transformers = function (out) {
+  if (out.val !== null && out.transformer !== null) out.val = out.transformer(out.val);
   return out;
 };
 
-const applyFilters = (out) => {
-  if (out.filter !== null) out.val = out.filter(out.val);
+// rename the thing
+const rename = function (out) {
+  if (out.rename !== null && out.mutate === true) out.key = out.rename;
   return out;
 };
 
-const initializer = function(iter) {
+// takes a string as a key or an obj
+const normalize = function(iter) {
   if (typeof iter === 'undefined') return void 0;
   iter = typeof iter === 'string' ? { key: iter } : iter;
   iter.val = process.env.hasOwnProperty(iter.key)
     ? process.env[iter.key]
     : null;
-  return merge({}, base, iter);
+  
+  iter = merge({}, base, iter);
+  return iter;
 };
 
+// this does all the things, yo.
 const EnvStrict = function(opts, defs) {
   if (!(this instanceof EnvStrict)) return new EnvStrict(opts);
-  defs = defs ? merge({}, defaults, defs) : merge({}, defaults);
-  const wildcards = defs.wildcard !== null
-    ? Object.keys(process.env)
-      .filter(wildcardFind.bind(null, defs.wildcard))
-      .map(initializer)
-    : [];
+  defs = defs ? merge({}, settings, defs) : merge({}, settings);
   const vars = opts instanceof Array
     ? opts
-      .map(initializer)
-      .map(applyDefaults)
-      .map(applyDelims)
-      .map(applyFilters)
+      .map(normalize)
+      .map(defaults)
+      .map(delims)
+      .map(rename)
+      .map(transformers)
     : [];
-  const errors = vars.filter(filterErrors);
-  if (errors.length) {
+  const e = vars.filter(errors);
+  if (e.length) {
     throw new Error(format('Missing required enviroment variables: %s',
-      errors.map(obj => obj.key).join(', ')));
+      e.map(obj => obj.key).join(', ')));
   }
-  wildcards.forEach(v => { this[v.key] = v.val; });
   vars.forEach(v => { this[v.key] = v.val; });
   return this;
 };
