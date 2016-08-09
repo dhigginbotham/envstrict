@@ -30,6 +30,3 @@ runs through basic tests for EnvStrict
 
 4 passing (23ms)
 ```
-
-
-

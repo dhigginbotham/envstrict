@@ -52,7 +52,6 @@ const normalize = function(iter) {
   iter.val = process.env.hasOwnProperty(iter.key)
     ? process.env[iter.key]
     : null;
-  
   iter = merge({}, base, iter);
   return iter;
 };
