@@ -44,8 +44,8 @@ const initializer = function(iter) {
   return merge({}, base, iter);
 };
 
-const Envious = function(opts, defs) {
-  if (!(this instanceof Envious)) return new Envious(opts);
+const EnvStrict = function(opts, defs) {
+  if (!(this instanceof EnvStrict)) return new EnvStrict(opts);
   defs = defs ? merge({}, defaults, defs) : merge({}, defaults);
   const wildcards = defs.wildcard !== null
     ? Object.keys(process.env)
@@ -69,4 +69,4 @@ const Envious = function(opts, defs) {
   return this;
 };
 
-module.exports = Envious;
+module.exports = EnvStrict;
