@@ -9,7 +9,7 @@ const envs = envstrict([
   key: 'NODE_ENV',
   required: false,
   default: 'development',
-  filter: (val) => val.toUpperCase(),
+  transformer: (val) => val.toUpperCase(),
   rename: 'environment'
 },
 {
