@@ -18,7 +18,7 @@ const envs = envstrict([
 },
 {
   key: 'FILE_PATHS',
-  delim: /,\?/,
+  delim: /,\s?/,
   default: '~/app/dir1,~/app/dir2,~/app/dir3'
 }
 ]);
