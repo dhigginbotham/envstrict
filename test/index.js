@@ -31,4 +31,17 @@ describe('runs through basic tests for EnvStrict', () => {
     expect(env.FILE_PATHS instanceof Array).to.equal(true);
     return done();
   });
+  it('should throw an error when a required key is not found', (done) => {
+    defaults.push({
+      key: 'PORT',
+      required: true
+    });
+    try {
+      const env = envs(defaults);
+    } catch (ex) {
+      expect(ex).to.not.be(null);
+      expect(ex.message).to.equal('Missing required enviroment variables: PORT');
+      return done();
+    }
+  });
 });
