@@ -1,0 +1,29 @@
+{
+  "name": "envstrict",
+  "version": "1.0.0",
+  "description": "schema like definitions for environment variables, throws an exception when missing required variables.  Has a few helper methods exposed for filtering, merging an objects keys, and a few other things.'",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"nothing yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dhigginbotham/envstrict.git"
+  },
+  "keywords": [
+    "envvars"
+  ],
+  "author": "dhigginbotham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dhigginbotham/envstrict/issues"
+  },
+  "homepage": "https://github.com/dhigginbotham/envstrict#readme",
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^3.0.2"
+  },
+  "dependencies": {
+    "lodash.merge": "^4.5.1"
+  }
+}
