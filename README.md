@@ -32,20 +32,23 @@ const envs = envstrict([{
 
 ## Tests
 ```sh
+$ npm test
+
+> envstrict@1.2.5 test /home/higgamuffin/code/envstrict
 > mocha test/ -R spec
 
-  runs through basic tests for EnvStrict
+  Tests for EnvStrict
     ✓ should have transformed the key for `NODE_ENV` to `environment`
     ✓ should be able to transform `environment` value to `DEVELOPMENT`
     ✓ should be able to delimit `FILE_PATHS` to an array
     ✓ throws an error when a required key is not found
-    ✓ should be able to add variables after initial object creation.
+    ✓ should accept an object instead of an array
+    ✓ should be able to add variables after initial object creation
     ✓ throws an error if passed an undefined
     ✓ should be able to handle undefined keys when mutate is `true`
     ✓ should be able to transform a `String` as an object key
     ✓ should be able to transform a `Number` as an object key
     ✓ should be able to transform a `Boolean` as an object key
 
-
-  10 passing (23ms)
+  11 passing (23ms)
 ```

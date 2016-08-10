@@ -1,6 +1,12 @@
 const envs = require('../');
 const expect = require('expect.js');
 
+const single = {
+  key: 'FILE_PATHS',
+  delim: /,\s?/,
+  default: '/app/dir1,/app/dir2,/app/dir3'
+};
+
 const defaults = [{
   key: 'NODE_ENV',
   required: false,
@@ -8,13 +14,11 @@ const defaults = [{
   transformer: (val) => val.toUpperCase(),
   rename: 'environment',
   mutate: true
-}, {
-  key: 'FILE_PATHS',
-  delim: /,\s?/,
-  default: '/app/dir1,/app/dir2,/app/dir3'
 }];
 
-describe('runs through basic tests for EnvStrict', () => {
+defaults.push(single);
+
+describe('Tests for EnvStrict', () => {
   it('should have transformed the key for `NODE_ENV` to `environment`', (done) => {
     const env = envs(defaults);
     expect(env.hasOwnProperty('NODE_ENV')).to.equal(false);
@@ -45,7 +49,12 @@ describe('runs through basic tests for EnvStrict', () => {
       return done();
     }
   });
-  it('should be able to add variables after initial object creation.', (done) => {
+  it('should accept an object instead of an array', (done) => {
+    const env = envs(single);
+    expect(env.FILE_PATHS instanceof Array).to.equal(true);
+    return done();
+  });
+  it('should be able to add variables after initial object creation', (done) => {
     const env = envs(defaults);
     env.add({
       key: 'TEST_ENV_VAR',

@@ -67,6 +67,8 @@ const EnvStrict = function(opts, defs) {
 };
 
 EnvStrict.prototype.process = function(arr) {
+  arr = typeof arr === 'object' 
+    && !(arr instanceof Array) ? [arr] : arr;
   const vars = arr instanceof Array
     ? arr
       .map(normalize)
