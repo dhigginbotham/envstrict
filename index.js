@@ -17,6 +17,8 @@ const settings = {
   wildcard: null
 };
 
+const privates = ['add', 'and', 'errors', 'process'];
+
 // filter fn for finding missing required values.
 const errors = (out) => out.val === null && out.required === true;
 
@@ -60,21 +62,35 @@ const normalize = function(iter) {
 const EnvStrict = function(opts, defs) {
   if (!(this instanceof EnvStrict)) return new EnvStrict(opts);
   defs = defs ? merge({}, settings, defs) : merge({}, settings);
-  const vars = opts instanceof Array
-    ? opts
+  const self = this;
+  const vars = this.process(opts);
+  return this.errors(vars);
+};
+
+EnvStrict.prototype.process = function(arr) {
+  const vars = arr instanceof Array
+    ? arr
       .map(normalize)
       .map(defaults)
       .map(delims)
       .map(rename)
       .map(transformers)
     : [];
-  const e = vars.filter(errors);
-  if (e.length) {
-    throw new Error(format('Missing required enviroment variables: %s',
-      e.map(obj => obj.key).join(', ')));
-  }
   vars.forEach(v => { this[v.key] = v.val; });
-  return this;
+  return vars;
+};
+
+EnvStrict.prototype.errors = function(vars) {
+  const e = vars.filter(errors);
+  if (!e.length) return this;
+  throw new Error(format('Missing required enviroment variables: %s',
+    e.map(obj => obj.key).join(', ')));
+};
+
+EnvStrict.prototype.add = EnvStrict.prototype.and = function(arr) {
+  arr = arr instanceof Array ? arr : [arr];
+  const vars = this.process(arr);
+  return this.errors(vars);
 };
 
 module.exports = EnvStrict;

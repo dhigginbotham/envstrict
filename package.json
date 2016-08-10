@@ -1,6 +1,6 @@
 {
   "name": "envstrict",
-  "version": "1.1.2",
+  "version": "1.2.2",
   "description": "schema like definitions for environment variables, throws an exception when missing required variables.  Has a few helper methods exposed for filtering, merging an objects keys, and a few other things.'",
   "main": "index.js",
   "scripts": {

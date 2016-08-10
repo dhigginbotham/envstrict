@@ -32,16 +32,35 @@ describe('runs through basic tests for EnvStrict', () => {
     return done();
   });
   it('should throw an error when a required key is not found', (done) => {
-    defaults.push({
+    const def = Array.prototype.slice.call(defaults);
+    def.push({
       key: 'PORT',
       required: true
     });
     try {
-      const env = envs(defaults);
+      const env = envs(def);
     } catch (ex) {
       expect(ex).to.not.be(null);
       expect(ex.message).to.equal('Missing required enviroment variables: PORT');
       return done();
     }
+  });
+  it('should be able to add variables after initial object creation.', (done) => {
+    const env = envs(defaults);
+    env.add({
+      key: 'TEST_ENV_VAR',
+      rename: 'testVar',
+      mutate: true,
+      default: '1'
+    }).and({
+      key: 'TEST_ENV_VAR_2',
+      rename: 'testVar2',
+      mutate: true,
+      default: '2'
+    });
+    expect(env.testVar).to.equal('1');
+    expect(env.testVar2).to.equal('2');
+    expect(Object.keys(env).length).to.equal(4);
+    return done();
   });
 });
