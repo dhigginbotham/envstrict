@@ -63,8 +63,7 @@ const EnvStrict = function(opts, defs) {
   if (!(this instanceof EnvStrict)) return new EnvStrict(opts, defs);
   defs = defs ? merge({}, settings, defs) : merge({}, settings);
   const self = this;
-  const vars = this.process(opts);
-  return this.errors(vars);
+  return this.process(opts);
 };
 
 EnvStrict.prototype.process = function(arr) {
@@ -76,8 +75,8 @@ EnvStrict.prototype.process = function(arr) {
       .map(rename)
       .map(transformers)
     : [];
-  vars.forEach(v => { this[v.key] = v.val; });
-  return vars;
+  if (vars.length) vars.forEach(v => { this[v.key] = v.val; });
+  return this.errors(vars);
 };
 
 EnvStrict.prototype.errors = function(vars) {
@@ -87,10 +86,9 @@ EnvStrict.prototype.errors = function(vars) {
     e.map(obj => obj.key).join(', ')));
 };
 
-EnvStrict.prototype.add = EnvStrict.prototype.and = function(arr) {
+EnvStrict.prototype.add = EnvStrict.prototype.and = EnvStrict.prototype.get = function(arr) {
   arr = arr instanceof Array ? arr : [arr];
-  const vars = this.process(arr);
-  return this.errors(vars);
+  return this.process(arr);
 };
 
 module.exports = EnvStrict;
