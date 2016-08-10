@@ -15,23 +15,23 @@ const defaults = [{
 }];
 
 describe('runs through basic tests for EnvStrict', () => {
-  it('should have transformed the key for NODE_ENV to environment', (done) => {
+  it('should have transformed the key for `NODE_ENV` to `environment`', (done) => {
     const env = envs(defaults);
     expect(env.hasOwnProperty('NODE_ENV')).to.equal(false);
     expect(env.hasOwnProperty('environment')).to.equal(true);
     return done();
   });
-  it('should be able to transform environment value to `DEVELOPMENT`', (done) => {
+  it('should be able to transform `environment` value to `DEVELOPMENT`', (done) => {
     const env = envs(defaults);
     expect(env.environment).to.equal('DEVELOPMENT');
     return done();
   });
-  it('should be able to delimit FILE_PATHS to an array', (done) => {
+  it('should be able to delimit `FILE_PATHS` to an array', (done) => {
     const env = envs(defaults);
     expect(env.FILE_PATHS instanceof Array).to.equal(true);
     return done();
   });
-  it('should throw an error when a required key is not found', (done) => {
+  it('throws an error when a required key is not found', (done) => {
     const def = Array.prototype.slice.call(defaults);
     def.push({
       key: 'PORT',
@@ -61,6 +61,45 @@ describe('runs through basic tests for EnvStrict', () => {
     expect(env.testVar).to.equal('1');
     expect(env.testVar2).to.equal('2');
     expect(Object.keys(env).length).to.equal(4);
+    return done();
+  });
+  it('throws an error if passed an undefined', (done) => {
+    const env = envs(defaults);
+    try {
+      env.add(void 0);
+    } catch (ex) {
+      expect(ex).to.not.be(null);
+      expect(ex.message).to.equal('Undefined value, function expects an object, not undefined.');
+    }
+    return done();
+  });
+  it('should be able to handle undefined keys when mutate is `true`', (done) => {
+    const env = envs(defaults);
+    env.add({
+      key: void 0,
+      rename: 'undefinedKey',
+      mutate: true,
+      default: '1'
+    })
+    expect(env.hasOwnProperty('undefinedKey')).to.equal(true);
+    return done();
+  });
+  it('should be able to transform a `String` as an object key', (done) => {
+    const env = envs(defaults);
+    env.add('stringKey');
+    expect(env.stringKey).to.be(null);
+    return done();
+  });
+  it('should be able to transform a `Number` as an object key', (done) => {
+    const env = envs(defaults);
+    env.add(1);
+    expect(env['1']).to.be(null);
+    return done();
+  });
+  it('should be able to transform a `Boolean` as an object key', (done) => {
+    const env = envs(defaults);
+    env.add(true);
+    expect(env['true']).to.be(null);
     return done();
   });
 });

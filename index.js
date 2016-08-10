@@ -49,8 +49,8 @@ const rename = function (out) {
 
 // takes a string as a key or an obj
 const normalize = function(iter) {
-  if (typeof iter === 'undefined') return void 0;
-  iter = typeof iter === 'string' ? { key: iter } : iter;
+  if (typeof iter === 'undefined') throw new Error('Undefined value, function expects an object, not undefined.');
+  iter = typeof iter !== 'object' ? { key: iter } : iter;
   iter.val = process.env.hasOwnProperty(iter.key)
     ? process.env[iter.key]
     : null;
@@ -60,7 +60,7 @@ const normalize = function(iter) {
 
 // this does all the things, yo.
 const EnvStrict = function(opts, defs) {
-  if (!(this instanceof EnvStrict)) return new EnvStrict(opts);
+  if (!(this instanceof EnvStrict)) return new EnvStrict(opts, defs);
   defs = defs ? merge({}, settings, defs) : merge({}, settings);
   const self = this;
   const vars = this.process(opts);
