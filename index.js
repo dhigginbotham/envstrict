@@ -37,7 +37,7 @@ const defaults = function (out) {
 const link = function (out) {
   if (out.hasOwnProperty('link') && out.val === null) {
     const link = out.link.replace(/\{\{(.*)\}\}/, '$1');
-    if (process.env.hasOwnProperty(link)) out.val = process.env[link];
+    if (process.env.hasOwnProperty(link)) out.val = process.env[link] || null;
   }
   return out;
 }
@@ -80,9 +80,9 @@ EnvStrict.prototype.process = function(arr) {
   const vars = arr instanceof Array
     ? arr
       .map(normalize)
+      .map(link)
       .map(defaults)
       .map(delims)
-      .map(link)
       .map(rename)
       .map(transformers)
     : [];
