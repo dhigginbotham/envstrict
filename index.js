@@ -1,4 +1,3 @@
-/* plan on moving this to its own npm-able thing.. fwiw <3 */
 const merge = require('lodash.merge');
 const format = require('util').format;
 
@@ -33,6 +32,15 @@ const defaults = function (out) {
   if (out.val === null && out.default !== null) out.val = out.default;
   return out;
 };
+
+// link value from another env var
+const link = function (out) {
+  if (out.hasOwnProperty('link') && out.val === null) {
+    const link = out.link.replace(/\{\{(.*)\}\}/, '$1');
+    if (process.env.hasOwnProperty(link)) out.val = process.env[link];
+  }
+  return out;
+}
 
 // apply transformers on the value, important to always have
 // happen after you apply defaults/delims
@@ -74,6 +82,7 @@ EnvStrict.prototype.process = function(arr) {
       .map(normalize)
       .map(defaults)
       .map(delims)
+      .map(link)
       .map(rename)
       .map(transformers)
     : [];

@@ -111,4 +111,15 @@ describe('Tests for EnvStrict', () => {
     expect(env['true']).to.be(null);
     return done();
   });
+  it('should be able to link one var from another', (done) => {
+    defaults.push({
+      key: 'LINK_VAR_SAMPLE',
+      rename: 'sampleLinkVar',
+      mutate: true,
+      link: '{{NODE_ENV}}'
+    });
+    const env = envs(defaults);
+    expect(env.sampleLinkVar).to.not.be(null);
+    return done();
+  });
 });
