@@ -130,4 +130,27 @@ describe('Tests for EnvStrict', () => {
     expect(env.anotherLinkVar).to.equal(1000);
     return done();
   });
+  it('should be able to deeply set an object', (done) => {
+    defaults.push({
+      key: 'DEEPLY_LINKED_KEY',
+      rename: 'deeply.linked.value',
+      mutate: true,
+      default: 'itdeeplylinks'
+    });
+    const env = envs(defaults);
+    expect(env.deeply.linked.value).to.be('itdeeplylinks');
+    return done();
+  });
+  it('should be able to handle a default array, when there are delimiters', (done) => {
+    defaults.push({
+      key: 'DEFAULT_ARRAY_WITH_DELIMS',
+      rename: 'deeply.linked.array',
+      default: [],
+      mutate: true,
+      delim: ','
+    });
+    const env = envs(defaults);
+    expect(env.deeply.linked.array).to.be.an(Array);
+    return done();
+  });
 });
